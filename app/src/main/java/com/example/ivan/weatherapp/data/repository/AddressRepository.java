@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.repository;
+package com.example.ivan.weatherapp.data.repository;
 
 import android.location.Address;
 import android.location.Geocoder;

@@ -1,13 +1,13 @@
 package com.example.ivan.weatherapp.business.main;
 
+import com.example.ivan.weatherapp.entity.db.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 import com.example.ivan.weatherapp.entity.ui.Weather;
-import com.example.ivan.weatherapp.repository.StorageRepository;
-import com.example.ivan.weatherapp.repository.WeatherRepository;
+import com.example.ivan.weatherapp.data.repository.StorageRepository;
+import com.example.ivan.weatherapp.data.repository.WeatherRepository;
 
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 
 /**
  * Created by ivan
@@ -26,22 +26,24 @@ public class WeatherInteractor {
     public Observable<Weather> getWeather(String cityName) {
         return getWeatherByCityNameFromNetwork(cityName)
                 .doOnNext(this::saveWeather)
+                .flatMap(this::mapSuccessResponse)
                 .onErrorResumeNext(throwable -> {
                     return getSavedWeather(cityName);
-                })
-                .flatMap(this::mapSuccessResponse);
+                });
     }
 
     private Observable<WeatherResponse> getWeatherByCityNameFromNetwork(String cityName) {
         return weatherRepository.getWeather(cityName);
     }
 
-    private Observable<WeatherResponse> getSavedWeather(String cityName) {
-        return storageRepository.getSavedWeather();
+    private Observable<Weather> getSavedWeather(String cityName) {
+        return storageRepository.getSavedWeather()
+                .flatMap(dbWeather -> Observable.just(Weather.fromDbWeather(dbWeather)));
     }
 
     private void saveWeather(WeatherResponse weather) {
-        storageRepository.saveWeather(weather);
+        storageRepository.saveWeather(DbWeather.fromWeatherResponse(weather))
+                .subscribe();
     }
 
     private Observable<Weather> mapSuccessResponse(WeatherResponse response) {

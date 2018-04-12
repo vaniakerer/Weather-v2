@@ -1,24 +1,22 @@
 package com.example.ivan.weatherapp.di;
 
-import android.app.Notification;
-import android.content.Context;
 import android.location.Geocoder;
 
 import com.example.ivan.weatherapp.api.DarkSkyApi;
 import com.example.ivan.weatherapp.business.main.AddressInterceptor;
 import com.example.ivan.weatherapp.business.main.StorageInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.repository.AddressRepository;
-import com.example.ivan.weatherapp.repository.StorageRepository;
-import com.example.ivan.weatherapp.repository.WeatherRepository;
-import com.example.ivan.weatherapp.utils.Prefs;
-
-import java.util.Locale;
+import com.example.ivan.weatherapp.data.repository.AddressRepository;
+import com.example.ivan.weatherapp.data.repository.StorageRepository;
+import com.example.ivan.weatherapp.data.repository.WeatherRepository;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+
+import ru.arturvasilov.sqlite.core.SQLite;
+import ru.arturvasilov.sqlite.rx.RxSQLite;
 
 /**
  * Created by ivan
@@ -59,8 +57,8 @@ public class MainModule {
 
     @Provides
     @Singleton
-    public StorageRepository provideStorageRepository(Prefs prefs) {
-        return new StorageRepository(prefs);
+    public StorageRepository provideStorageRepository(RxSQLite sqLite) {
+        return new StorageRepository(sqLite);
     }
 
 

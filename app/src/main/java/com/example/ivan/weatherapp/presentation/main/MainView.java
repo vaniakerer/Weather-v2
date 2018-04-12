@@ -11,7 +11,6 @@ import com.example.ivan.weatherapp.presentation.base.view.BaseMvpView;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface MainView extends BaseLoadingView {
-    void showNoCitySelectedYet();
 
     void showCityName(String cityName);
 

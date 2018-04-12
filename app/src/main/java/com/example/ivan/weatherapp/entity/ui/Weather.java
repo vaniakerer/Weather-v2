@@ -2,6 +2,7 @@ package com.example.ivan.weatherapp.entity.ui;
 
 import android.app.Notification;
 
+import com.example.ivan.weatherapp.entity.db.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 
 /**
@@ -27,6 +28,10 @@ public class Weather {
 
     public static Weather fromWeatherResponse(WeatherResponse response) {
         return new Weather(response.getDailyDTO().getData().get(0).getTemperatureMin(), response.getDailyDTO().getData().get(0).getWindSpeed());
+    }
+
+    public static Weather fromDbWeather(DbWeather dbWeather) {
+        return new Weather(dbWeather.getTemperature(), dbWeather.getWindSpeed());
     }
 
 

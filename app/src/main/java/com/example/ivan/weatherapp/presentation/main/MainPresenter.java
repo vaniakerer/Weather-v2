@@ -1,5 +1,7 @@
 package com.example.ivan.weatherapp.presentation.main;
 
+import android.support.annotation.StringRes;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.example.ivan.weatherapp.business.main.AddressInterceptor;
 import com.example.ivan.weatherapp.business.main.StorageInterceptor;
@@ -27,20 +29,22 @@ public class MainPresenter extends BasePresenter<MainView> {
 
     public void init() {
         storageInterceptor.getSavedCityName()
-                .subscribe(this::getCoordsForomAddress);
+                .doOnError(Throwable::printStackTrace)
+                .subscribe(this::mapAddressAndLoadWeather, throwable -> getViewState().showInputCityNameState());
     }
 
-    private void getCoordsForomAddress(String s) {
+    private void mapAddressAndLoadWeather(String s) {
         if (TextUtils.isEmpty(s))
             getViewState().showInputCityNameState();
-        else
+        else {
             addressInterceptor.getLocationFromCityName(s)
-                    .subscribe(this::loadWeatherFrom, error -> {
+                    .subscribe(this::loadWeather, error -> {
                         getViewState().showError(error.getMessage());
                     });
+        }
     }
 
-    private void loadWeatherFrom(String coords) {
+    private void loadWeather(String coords) {
         getViewState().showProgress();
         weatherInteractor.getWeather(coords)
                 .subscribeOn(Schedulers.io())
@@ -56,8 +60,13 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void setCityName(String cityName) {
-        storageInterceptor.saveCityName(cityName);
-        loadWeatherFrom(cityName);
+        storageInterceptor.clearDb()
+                .subscribe(o -> saveCity(cityName));
     }
+
+    private void saveCity(String cityName) {
+        storageInterceptor.saveCityName(cityName).subscribe(o -> mapAddressAndLoadWeather(cityName));
+    }
+
 
 }

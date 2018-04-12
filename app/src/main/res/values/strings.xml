@@ -6,4 +6,5 @@
 
     <string name="city_temperature">%1$s \u00B0 С</string>
     <string name="wind_speed">%1$s m/s</string>
+    <string name="change_city_name">Change city name</string>
 </resources>

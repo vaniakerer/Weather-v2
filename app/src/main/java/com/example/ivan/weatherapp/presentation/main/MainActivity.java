@@ -1,7 +1,6 @@
 package com.example.ivan.weatherapp.presentation.main;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -19,6 +18,7 @@ import com.example.ivan.weatherapp.presentation.base.view.BaseActivity;
 
 import javax.inject.Inject;
 
+
 public class MainActivity extends BaseActivity implements MainView {
     @InjectPresenter
     MainPresenter presenter;
@@ -30,9 +30,10 @@ public class MainActivity extends BaseActivity implements MainView {
     StorageInterceptor storageInterceptor;
 
     private ViewGroup weatherContainer;
-    private TextView cityName;
+    private TextView chageCity;
     private TextView temperatureTv;
     private TextView windSpeedTv;
+    private TextView cityName;
     private ProgressBar progressBar;
 
     @ProvidePresenter
@@ -53,26 +54,17 @@ public class MainActivity extends BaseActivity implements MainView {
 
     protected void initViews() {
         weatherContainer = findViewById(R.id.weather_container);
+        chageCity = findViewById(R.id.change_city);
         cityName = findViewById(R.id.city_name);
         temperatureTv = findViewById(R.id.current_temperature);
         windSpeedTv = findViewById(R.id.current_wind_speed);
         progressBar = findViewById(R.id.progress);
 
-        cityName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title(R.string.city_name)
-                        .input("city", "city", false, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                presenter.setCityName(input.toString());
-                            }
-                        })
-                        .build()
-                        .show();
-            }
-        });
+        chageCity.setOnClickListener(view -> new MaterialDialog.Builder(MainActivity.this)
+                .title(R.string.city_name)
+                .input("city", "city", false, (dialog, input) -> presenter.setCityName(input.toString()))
+                .build()
+                .show());
     }
 
     @Override
@@ -89,12 +81,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void showError(String message) {
-        cityName.setText(message);
-    }
-
-    @Override
-    public void showNoCitySelectedYet() {
-
+        showErrorMessage(message);
     }
 
     @Override
@@ -119,7 +106,8 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void showInputCityNameState() {
-        this.cityName.setText(getString(R.string.input_city_name));
+        this.chageCity.setText(getString(R.string.input_city_name));
     }
+
 
 }

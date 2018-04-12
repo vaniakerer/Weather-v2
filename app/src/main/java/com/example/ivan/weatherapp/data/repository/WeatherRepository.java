@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.repository;
+package com.example.ivan.weatherapp.data.repository;
 
 import com.example.ivan.weatherapp.api.DarkSkyApi;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;

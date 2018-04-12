@@ -1,8 +1,11 @@
 package com.example.ivan.weatherapp.business.main;
 
-import com.example.ivan.weatherapp.repository.StorageRepository;
+import com.example.ivan.weatherapp.data.db.tables.CityTable;
+import com.example.ivan.weatherapp.data.repository.StorageRepository;
+import com.example.ivan.weatherapp.entity.db.DbCity;
 
 import io.reactivex.Observable;
+import ru.arturvasilov.sqlite.core.SQLite;
 
 
 /**
@@ -17,10 +20,15 @@ public class StorageInterceptor {
     }
 
     public Observable<String> getSavedCityName() {
-        return storageRepository.getSavedCityName();
+        return storageRepository.getSavedCityName()
+                .flatMap(dbCities -> Observable.just(dbCities.get(0).getCityName()));
     }
 
-    public void saveCityName(String cityName) {
-        storageRepository.saveNewCityName(cityName);
+    public Observable saveCityName(String cityName) {
+      return   storageRepository.saveNewCityName(new DbCity(cityName));
+    }
+
+    public Observable clearDb() {
+        return storageRepository.clearDb();
     }
 }

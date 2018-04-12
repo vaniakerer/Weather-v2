@@ -5,14 +5,13 @@ import com.example.ivan.weatherapp.presentation.main.MainActivity;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import retrofit2.Retrofit;
 
 /**
  * Created by ivan
  */
 
 @Singleton
-@Component(modules = {ApiModule.class, RetrofitModule.class, MainModule.class, ContextModule.class, UtilsModule.class})
+@Component(modules = {ApiModule.class, RetrofitModule.class, MainModule.class, ContextModule.class, UtilsModule.class, SQLiteModule.class})
 public interface AppComponent {
     void injectMainActivity(MainActivity mainActivity);
 }

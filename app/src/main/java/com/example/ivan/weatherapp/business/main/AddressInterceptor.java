@@ -1,6 +1,6 @@
 package com.example.ivan.weatherapp.business.main;
 
-import com.example.ivan.weatherapp.repository.AddressRepository;
+import com.example.ivan.weatherapp.data.repository.AddressRepository;
 
 import io.reactivex.Observable;
 
