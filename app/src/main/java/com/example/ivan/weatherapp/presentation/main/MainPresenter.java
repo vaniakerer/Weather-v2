@@ -10,6 +10,7 @@ import com.example.ivan.weatherapp.presentation.base.BasePresenter;
 import com.example.ivan.weatherapp.utils.TextUtils;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -28,25 +29,28 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void init() {
-        storageInterceptor.getSavedCityName()
+        Disposable disposable = storageInterceptor.getSavedCityName()
                 .doOnError(Throwable::printStackTrace)
                 .subscribe(this::mapAddressAndLoadWeather, throwable -> getViewState().showInputCityNameState());
+
+        unsubscribeOnDestroy(disposable);
     }
 
     private void mapAddressAndLoadWeather(String s) {
         if (TextUtils.isEmpty(s))
             getViewState().showInputCityNameState();
         else {
-            addressInterceptor.getLocationFromCityName(s)
+            Disposable disposable = addressInterceptor.getLocationFromCityName(s)
                     .subscribe(this::loadWeather, error -> {
                         getViewState().showError(error.getMessage());
                     });
+            unsubscribeOnDestroy(disposable);
         }
     }
 
     private void loadWeather(String coords) {
         getViewState().showProgress();
-        weatherInteractor.getWeather(coords)
+        Disposable disposable = weatherInteractor.getWeather(coords)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(weather -> {
@@ -57,16 +61,18 @@ public class MainPresenter extends BasePresenter<MainView> {
                     getViewState().hideProgress();
                     getViewState().showError("Error");
                 });
+
+        unsubscribeOnDestroy(disposable);
     }
 
     public void setCityName(String cityName) {
-        storageInterceptor.clearDb()
+        Disposable disposable = storageInterceptor.clearDb()
                 .subscribe(o -> saveCity(cityName));
+        unsubscribeOnDestroy(disposable);
     }
 
     private void saveCity(String cityName) {
-        storageInterceptor.saveCityName(cityName).subscribe(o -> mapAddressAndLoadWeather(cityName));
+        Disposable disposable = storageInterceptor.saveCityName(cityName).subscribe(o -> mapAddressAndLoadWeather(cityName));
+        unsubscribeOnDestroy(disposable);
     }
-
-
 }

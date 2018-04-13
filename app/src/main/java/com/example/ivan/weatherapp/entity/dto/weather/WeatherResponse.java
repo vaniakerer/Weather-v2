@@ -19,7 +19,7 @@ public class WeatherResponse {
     private String timezone;
     @SerializedName("offset")
     @Expose
-    private Integer offset;
+    private Double offset;
     @SerializedName("currently")
     @Expose
     private CurrentlyWeather currentlyDTO;
@@ -39,7 +39,7 @@ public class WeatherResponse {
         return timezone;
     }
 
-    public Integer getOffset() {
+    public Double getOffset() {
         return offset;
     }
 

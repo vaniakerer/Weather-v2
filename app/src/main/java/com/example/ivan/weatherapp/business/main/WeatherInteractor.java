@@ -1,5 +1,7 @@
 package com.example.ivan.weatherapp.business.main;
 
+import android.util.Log;
+
 import com.example.ivan.weatherapp.entity.db.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 import com.example.ivan.weatherapp.entity.ui.Weather;
@@ -7,7 +9,10 @@ import com.example.ivan.weatherapp.data.repository.StorageRepository;
 import com.example.ivan.weatherapp.data.repository.WeatherRepository;
 
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
+import io.reactivex.observables.ConnectableObservable;
 
 /**
  * Created by ivan
@@ -24,12 +29,16 @@ public class WeatherInteractor {
     }
 
     public Observable<Weather> getWeather(String cityName) {
-        return getWeatherByCityNameFromNetwork(cityName)
+        Observable<Weather> networkObservable = getWeatherByCityNameFromNetwork(cityName)
                 .doOnNext(this::saveWeather)
-                .flatMap(this::mapSuccessResponse)
-                .onErrorResumeNext(throwable -> {
-                    return getSavedWeather(cityName);
-                });
+                .doOnError(Throwable::printStackTrace)
+                .flatMap(this::mapSuccessResponse);
+
+        Observable<Weather> dbObservable = getSavedWeather(cityName);
+
+        return Observable.concat(networkObservable, dbObservable)
+                .take(1);
+
     }
 
     private Observable<WeatherResponse> getWeatherByCityNameFromNetwork(String cityName) {
