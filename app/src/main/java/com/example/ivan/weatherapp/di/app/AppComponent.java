@@ -5,6 +5,7 @@ import android.location.Geocoder;
 
 import com.example.ivan.weatherapp.api.ApiFactory;
 import com.example.ivan.weatherapp.api.DarkSkyApi;
+import com.example.ivan.weatherapp.di.weather.WeatherComponent;
 import com.example.ivan.weatherapp.di.weather.WeatherModule;
 import com.example.ivan.weatherapp.presentation.main.MainActivity;
 
@@ -21,13 +22,5 @@ import ru.arturvasilov.sqlite.rx.RxSQLite;
 @Singleton
 @Component(modules = {ApiModule.class, RetrofitModule.class, ContextModule.class, UtilsModule.class, SQLiteModule.class})
 public interface AppComponent {
-    Context context();
-
-    DarkSkyApi darkSkyApi();
-
-    Retrofit retrofit();
-
-    Geocoder geocoder();
-
-    RxSQLite rxSqlite();
+    WeatherComponent plusWeatherComponent(WeatherModule weatherModule);
 }

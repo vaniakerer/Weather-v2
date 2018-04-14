@@ -5,8 +5,8 @@ import android.app.Application;
 import com.example.ivan.weatherapp.di.app.AppComponent;
 import com.example.ivan.weatherapp.di.app.ContextModule;
 import com.example.ivan.weatherapp.di.app.DaggerAppComponent;
-import com.example.ivan.weatherapp.di.weather.DaggerWeatherComponent;
 import com.example.ivan.weatherapp.di.weather.WeatherComponent;
+import com.example.ivan.weatherapp.di.weather.WeatherModule;
 import com.facebook.stetho.Stetho;
 
 import ru.arturvasilov.sqlite.core.SQLite;
@@ -58,25 +58,24 @@ public class WeatherApp extends Application {
     }
 
     private void initAppComponent() {
-       /* sAppComponent = DaggerAppComponent.builder()
-                .contextModule(new ContextModule(this))
-                .build();*/
-
         sAppComponent = DaggerAppComponent.builder()
                 .contextModule(new ContextModule(this))
                 .build();
+    }
 
-        sWeatherComponent = DaggerWeatherComponent.builder()
-                .appComponent(sAppComponent)
-                .build();
+    public WeatherComponent plusWeatherComponent() {
+        if (sWeatherComponent == null)
+            sWeatherComponent = sAppComponent.plusWeatherComponent(new WeatherModule());
+
+        return sWeatherComponent;
+    }
+
+    public void clearWeatherComponent() {
+        sWeatherComponent = null;
     }
 
     public static AppComponent getAppComponent() {
         return sAppComponent;
-    }
-
-    public static WeatherComponent getWeatherComponent() {
-        return sWeatherComponent;
     }
 
     public static WeatherApp get() {

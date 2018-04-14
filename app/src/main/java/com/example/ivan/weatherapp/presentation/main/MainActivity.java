@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        WeatherApp.getWeatherComponent().injectMainActivity(this);
+        WeatherApp.get().plusWeatherComponent().injectMainActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
@@ -118,5 +118,11 @@ public class MainActivity extends BaseActivity implements MainView {
                 .input(getString(R.string.input_city_name), "", false, (dialog, input) -> presenter.setCityName(input.toString()))
                 .build()
                 .show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WeatherApp.get().clearWeatherComponent();
     }
 }
