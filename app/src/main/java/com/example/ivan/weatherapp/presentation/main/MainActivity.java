@@ -12,7 +12,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.ivan.weatherapp.R;
 import com.example.ivan.weatherapp.WeatherApp;
 import com.example.ivan.weatherapp.business.main.AddressInterceptor;
-import com.example.ivan.weatherapp.business.main.StorageInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
 import com.example.ivan.weatherapp.presentation.base.view.BaseActivity;
 
@@ -26,8 +25,6 @@ public class MainActivity extends BaseActivity implements MainView {
     WeatherInteractor weatherInteractor;
     @Inject
     AddressInterceptor addressInterceptor;
-    @Inject
-    StorageInterceptor storageInterceptor;
 
     private ViewGroup weatherContainer;
     private TextView chageCity;
@@ -38,7 +35,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @ProvidePresenter
     MainPresenter providePresenter() {
-        return new MainPresenter(weatherInteractor, addressInterceptor, storageInterceptor);
+        return new MainPresenter(weatherInteractor, addressInterceptor);
     }
 
     @Override
@@ -48,7 +45,7 @@ public class MainActivity extends BaseActivity implements MainView {
         setContentView(R.layout.activity_main);
         initViews();
 
-        presenter.init();
+        presenter.loadWeather();
     }
 
 
@@ -60,11 +57,7 @@ public class MainActivity extends BaseActivity implements MainView {
         windSpeedTv = findViewById(R.id.current_wind_speed);
         progressBar = findViewById(R.id.progress);
 
-        chageCity.setOnClickListener(view -> new MaterialDialog.Builder(MainActivity.this)
-                .title(R.string.city_name)
-                .input("city", "city", false, (dialog, input) -> presenter.setCityName(input.toString()))
-                .build()
-                .show());
+        chageCity.setOnClickListener(view -> presenter.onChangeCityNameClick());
     }
 
     @Override
@@ -109,5 +102,21 @@ public class MainActivity extends BaseActivity implements MainView {
         this.chageCity.setText(getString(R.string.input_city_name));
     }
 
+    @Override
+    public void showChangeCityNameDialog(String cityName) {
+        new MaterialDialog.Builder(MainActivity.this)
+                .title(R.string.city_name)
+                .input(getString(R.string.input_city_name), cityName, false, (dialog, input) -> presenter.setCityName(input.toString()))
+                .build()
+                .show();
+    }
 
+    @Override
+    public void showChangeCityNameDialog() {
+        new MaterialDialog.Builder(MainActivity.this)
+                .title(R.string.city_name)
+                .input(getString(R.string.input_city_name), "", false, (dialog, input) -> presenter.setCityName(input.toString()))
+                .build()
+                .show();
+    }
 }

@@ -21,4 +21,8 @@ public interface MainView extends BaseLoadingView {
     void showWeather();
 
     void showInputCityNameState();
+
+    void showChangeCityNameDialog(String cityName);
+
+    void showChangeCityNameDialog();
 }

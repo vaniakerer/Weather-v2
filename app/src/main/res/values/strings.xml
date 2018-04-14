@@ -4,7 +4,7 @@
     <string name="input_city_name">Input city name</string>
     <string name="city_name">City name</string>
 
-    <string name="city_temperature">%1$s \u00B0 С</string>
+    <string name="city_temperature">%1$s \u00B0 F</string>
     <string name="wind_speed">%1$s m/s</string>
     <string name="change_city_name">Change city name</string>
 </resources>

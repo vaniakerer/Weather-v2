@@ -42,15 +42,15 @@ public class StorageRepository {
         return sqLite.querySingle(WeatherTable.TABLE);
     }
 
-    public Observable saveWeather(DbWeather weather) {
-        return sqLite.insert(WeatherTable.TABLE, weather);
+    public Observable<DbWeather> saveWeather(DbWeather weather) {
+        return sqLite.insert(WeatherTable.TABLE, weather).flatMap(uri -> Observable.just(weather));
     }
 
     public Observable clearDb() {
         return Observable.combineLatest(clearCity(), clearWeather(), (integer, integer2) -> integer + integer2);
     }
 
-    private Observable<Integer> clearWeather() {
+    public Observable<Integer> clearWeather() {
         return sqLite.delete(WeatherTable.TABLE);
     }
 

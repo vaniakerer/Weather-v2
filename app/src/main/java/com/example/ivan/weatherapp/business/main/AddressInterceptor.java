@@ -1,6 +1,9 @@
 package com.example.ivan.weatherapp.business.main;
 
+import com.example.ivan.weatherapp.business.main.exeption.CannotConvertAddressExeption;
 import com.example.ivan.weatherapp.data.repository.AddressRepository;
+
+import java.io.IOException;
 
 import io.reactivex.Observable;
 
@@ -16,7 +19,4 @@ public class AddressInterceptor {
         this.addressRepository = addressRepository;
     }
 
-    public Observable<String> getLocationFromCityName(String cityName) {
-        return addressRepository.getLocationsByCityName(cityName);
-    }
 }

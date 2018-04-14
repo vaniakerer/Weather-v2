@@ -2,17 +2,20 @@ package com.example.ivan.weatherapp.business.main;
 
 import android.util.Log;
 
+import com.example.ivan.weatherapp.business.main.exeption.NoCityNameExeption;
+import com.example.ivan.weatherapp.business.main.exeption.NoSavedWeatherException;
+import com.example.ivan.weatherapp.data.repository.AddressRepository;
+import com.example.ivan.weatherapp.entity.db.DbCity;
 import com.example.ivan.weatherapp.entity.db.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 import com.example.ivan.weatherapp.entity.ui.Weather;
 import com.example.ivan.weatherapp.data.repository.StorageRepository;
 import com.example.ivan.weatherapp.data.repository.WeatherRepository;
+import com.example.ivan.weatherapp.utils.TextUtils;
 
-
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.observables.ConnectableObservable;
+import io.reactivex.ObservableSource;
 
 /**
  * Created by ivan
@@ -22,43 +25,70 @@ public class WeatherInteractor {
 
     private WeatherRepository weatherRepository;
     private StorageRepository storageRepository;
+    private AddressRepository addressRepository;
 
-    public WeatherInteractor(WeatherRepository weatherRepository, StorageRepository storageRepository) {
+    public WeatherInteractor(WeatherRepository weatherRepository, StorageRepository storageRepository, AddressRepository addressRepository) {
         this.weatherRepository = weatherRepository;
         this.storageRepository = storageRepository;
+        this.addressRepository = addressRepository;
     }
 
-    public Observable<Weather> getWeather(String cityName) {
-        Observable<Weather> networkObservable = getWeatherByCityNameFromNetwork(cityName)
-                .doOnNext(this::saveWeather)
-                .doOnError(Throwable::printStackTrace)
-                .flatMap(this::mapSuccessResponse);
-
-        Observable<Weather> dbObservable = getSavedWeather(cityName);
-
-        return Observable.concat(networkObservable, dbObservable)
-                .take(1);
-
+    public Observable<String> getSavedCityLocation() {
+        return storageRepository.getSavedCityName()
+                .flatMap(dbCities -> Observable.just(dbCities.get(0).getCityName()))
+                .doOnNext(s -> Log.d("CityName", s))
+                .flatMap(s -> {
+                    if (TextUtils.isEmpty(s))
+                        throw new NoCityNameExeption();
+                    else {
+                        return addressRepository.getLocationsByCityName(s);
+                    }
+                });
     }
 
-    private Observable<WeatherResponse> getWeatherByCityNameFromNetwork(String cityName) {
-        return weatherRepository.getWeather(cityName);
+    public Observable<String> getSavedCityName() {
+        return storageRepository.getSavedCityName()
+                .flatMap(dbCities -> Observable.just(dbCities.get(0).getCityName()));
     }
 
-    private Observable<Weather> getSavedWeather(String cityName) {
+
+    public Observable<Weather> getWeather() {
+        return getWeatherByCityNameFromNetwork()
+                .flatMap(this::reSaveWeather)
+                .flatMap(this::mapSuccessResponse)
+                .onErrorResumeNext(getSavedWeather())
+                .doOnError(Throwable::printStackTrace);
+    }
+
+    private Observable<WeatherResponse> getWeatherByCityNameFromNetwork() {
+        return getSavedCityLocation()
+                .flatMap(s -> weatherRepository.getWeather(s));
+    }
+
+    private Observable<Weather> getSavedWeather() {
         return storageRepository.getSavedWeather()
                 .flatMap(dbWeather -> Observable.just(Weather.fromDbWeather(dbWeather)));
     }
 
-    private void saveWeather(WeatherResponse weather) {
-        storageRepository.saveWeather(DbWeather.fromWeatherResponse(weather))
-                .subscribe();
+    private Observable<DbWeather> reSaveWeather(WeatherResponse weather) {
+        return storageRepository
+                .clearWeather().flatMap(integer -> storageRepository.saveWeather(DbWeather.fromWeatherResponse(weather)));
     }
 
-    private Observable<Weather> mapSuccessResponse(WeatherResponse response) {
-        if (response != null)
-            return Observable.just(Weather.fromWeatherResponse(response));
+    public Observable saveCityName(String cityName) {
+        return storageRepository.saveNewCityName(new DbCity(cityName));
+    }
+
+    public Observable clearDb() {
+        return storageRepository.clearDb();
+    }
+
+    private Observable<Weather> mapSuccessResponse(DbWeather weather) {
+        if (weather != null)
+            return Observable.just(Weather.fromDbWeather(weather));
         else
             return Observable.empty();
     }
+
+
 }

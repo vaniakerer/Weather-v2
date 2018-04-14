@@ -4,7 +4,6 @@ import android.location.Geocoder;
 
 import com.example.ivan.weatherapp.api.DarkSkyApi;
 import com.example.ivan.weatherapp.business.main.AddressInterceptor;
-import com.example.ivan.weatherapp.business.main.StorageInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
 import com.example.ivan.weatherapp.data.repository.AddressRepository;
 import com.example.ivan.weatherapp.data.repository.StorageRepository;
@@ -15,7 +14,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import ru.arturvasilov.sqlite.core.SQLite;
 import ru.arturvasilov.sqlite.rx.RxSQLite;
 
 /**
@@ -27,8 +25,8 @@ public class MainModule {
 
     @Provides
     @Singleton
-    public WeatherInteractor getWeatherInteractor(WeatherRepository repository, StorageRepository storageRepository) {
-        return new WeatherInteractor(repository, storageRepository);
+    public WeatherInteractor getWeatherInteractor(WeatherRepository repository, StorageRepository storageRepository, AddressRepository addressRepository) {
+        return new WeatherInteractor(repository, storageRepository, addressRepository);
     }
 
     @Provides
@@ -47,12 +45,6 @@ public class MainModule {
     @Singleton
     public AddressRepository getAddressRepository(Geocoder geocoder) {
         return new AddressRepository(geocoder);
-    }
-
-    @Provides
-    @Singleton
-    public StorageInterceptor getStorageInterceptor(StorageRepository storageRepository) {
-        return new StorageInterceptor(storageRepository);
     }
 
     @Provides
