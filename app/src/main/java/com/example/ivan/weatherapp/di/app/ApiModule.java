@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.di;
+package com.example.ivan.weatherapp.di.app;
 
 import com.example.ivan.weatherapp.api.DarkSkyApi;
 

@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        WeatherApp.getAppComponent().injectMainActivity(this);
+        WeatherApp.getWeatherComponent().injectMainActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();

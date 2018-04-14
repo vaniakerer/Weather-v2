@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.di;
+package com.example.ivan.weatherapp.di.weather;
 
 import android.location.Geocoder;
 
@@ -21,34 +21,34 @@ import ru.arturvasilov.sqlite.rx.RxSQLite;
  */
 
 @Module
-public class MainModule {
+public class WeatherModule {
 
     @Provides
-    @Singleton
+    @WeatherScope
     public WeatherInteractor getWeatherInteractor(WeatherRepository repository, StorageRepository storageRepository, AddressRepository addressRepository) {
         return new WeatherInteractor(repository, storageRepository, addressRepository);
     }
 
     @Provides
-    @Singleton
+    @WeatherScope
     public WeatherRepository getWetherRepository(DarkSkyApi api) {
         return new WeatherRepository(api);
     }
 
     @Provides
-    @Singleton
+    @WeatherScope
     public AddressInterceptor getAddressInterceptor(AddressRepository addressRepository) {
         return new AddressInterceptor(addressRepository);
     }
 
     @Provides
-    @Singleton
+    @WeatherScope
     public AddressRepository getAddressRepository(Geocoder geocoder) {
         return new AddressRepository(geocoder);
     }
 
     @Provides
-    @Singleton
+    @WeatherScope
     public StorageRepository provideStorageRepository(RxSQLite sqLite) {
         return new StorageRepository(sqLite);
     }

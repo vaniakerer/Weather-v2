@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.di;
+package com.example.ivan.weatherapp.di.app;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;

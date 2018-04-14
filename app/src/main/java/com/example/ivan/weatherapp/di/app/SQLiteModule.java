@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.di;
+package com.example.ivan.weatherapp.di.app;
 
 import android.support.annotation.StringRes;
 

@@ -2,10 +2,11 @@ package com.example.ivan.weatherapp;
 
 import android.app.Application;
 
-import com.example.ivan.weatherapp.data.db.SQLiteProvider;
-import com.example.ivan.weatherapp.di.AppComponent;
-import com.example.ivan.weatherapp.di.ContextModule;
-import com.example.ivan.weatherapp.di.DaggerAppComponent;
+import com.example.ivan.weatherapp.di.app.AppComponent;
+import com.example.ivan.weatherapp.di.app.ContextModule;
+import com.example.ivan.weatherapp.di.app.DaggerAppComponent;
+import com.example.ivan.weatherapp.di.weather.DaggerWeatherComponent;
+import com.example.ivan.weatherapp.di.weather.WeatherComponent;
 import com.facebook.stetho.Stetho;
 
 import ru.arturvasilov.sqlite.core.SQLite;
@@ -17,6 +18,7 @@ import ru.arturvasilov.sqlite.core.SQLite;
 public class WeatherApp extends Application {
     private static WeatherApp sInstance;
     private static AppComponent sAppComponent;
+    private static WeatherComponent sWeatherComponent;
 
     @Override
     public void onCreate() {
@@ -56,13 +58,25 @@ public class WeatherApp extends Application {
     }
 
     private void initAppComponent() {
+       /* sAppComponent = DaggerAppComponent.builder()
+                .contextModule(new ContextModule(this))
+                .build();*/
+
         sAppComponent = DaggerAppComponent.builder()
                 .contextModule(new ContextModule(this))
+                .build();
+
+        sWeatherComponent = DaggerWeatherComponent.builder()
+                .appComponent(sAppComponent)
                 .build();
     }
 
     public static AppComponent getAppComponent() {
         return sAppComponent;
+    }
+
+    public static WeatherComponent getWeatherComponent() {
+        return sWeatherComponent;
     }
 
     public static WeatherApp get() {
