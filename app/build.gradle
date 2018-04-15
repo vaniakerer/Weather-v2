@@ -39,14 +39,12 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.google.dagger:dagger:2.11'
     implementation 'ru.arturvasilov:sqlite:0.2.0'
-    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.3'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
-
-
-    // устаревший OkHttp 2.x
     implementation 'com.facebook.stetho:stetho-okhttp:1.4.2'
-// OkHttp 3.x
     implementation 'com.facebook.stetho:stetho-okhttp3:1.4.2'
     implementation 'com.facebook.stetho:stetho-urlconnection:1.4.2'
-
+    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.3'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.8.47'
 }

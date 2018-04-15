@@ -11,6 +11,7 @@ public class DbCity {
     public DbCity() {
     }
 
+
     public DbCity(String cityName) {
         this.cityName = cityName;
     }

@@ -23,8 +23,6 @@ public class MainActivity extends BaseActivity implements MainView {
     MainPresenter presenter;
     @Inject
     WeatherInteractor weatherInteractor;
-    @Inject
-    AddressInterceptor addressInterceptor;
 
     private ViewGroup weatherContainer;
     private TextView chageCity;
@@ -35,7 +33,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @ProvidePresenter
     MainPresenter providePresenter() {
-        return new MainPresenter(weatherInteractor, addressInterceptor);
+        return new MainPresenter(weatherInteractor);
     }
 
     @Override
@@ -46,6 +44,7 @@ public class MainActivity extends BaseActivity implements MainView {
         initViews();
 
         presenter.loadWeather();
+
     }
 
 
@@ -95,6 +94,11 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void showWeather() {
 
+    }
+
+    @Override
+    public void showNoWeatherError() {
+        temperatureTv.setText(getString(R.string.no_weather));
     }
 
     @Override

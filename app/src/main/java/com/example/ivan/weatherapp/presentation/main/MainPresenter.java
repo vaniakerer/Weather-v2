@@ -4,8 +4,11 @@ import com.arellomobile.mvp.InjectViewState;
 import com.example.ivan.weatherapp.business.main.AddressInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
 import com.example.ivan.weatherapp.business.main.exeption.CannotConvertAddressExeption;
+import com.example.ivan.weatherapp.business.main.exeption.NoCityNameExeption;
+import com.example.ivan.weatherapp.entity.ui.Weather;
 import com.example.ivan.weatherapp.presentation.base.BasePresenter;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -16,29 +19,34 @@ import io.reactivex.schedulers.Schedulers;
 @InjectViewState
 public class MainPresenter extends BasePresenter<MainView> {
     private WeatherInteractor weatherInteractor;
-    private AddressInterceptor addressInterceptor;
 
-    public MainPresenter(WeatherInteractor weatherInteractor, AddressInterceptor addressInterceptor) {
+    public MainPresenter(WeatherInteractor weatherInteractor) {
         this.weatherInteractor = weatherInteractor;
-        this.addressInterceptor = addressInterceptor;
     }
 
     public void loadWeather() {
         getViewState().showProgress();
         Disposable disposable = weatherInteractor.getWeather()
-                .doOnError(Throwable::printStackTrace)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(weather -> {
                     getViewState().hideProgress();
-                    getViewState().showTemperature(String.valueOf(weather.getTemperature()));
-                    getViewState().showWindSpeed(String.valueOf(weather.getSpeed()));
+                    handleSuccessWeatherLoad(weather);
                 }, error -> {
                     getViewState().hideProgress();
-                    getViewState().showError("Error");
+                }, () -> {
                 });
 
+
         unsubscribeOnDestroy(disposable);
+    }
+
+    private void handleSuccessWeatherLoad(Weather weather) {
+        if (weather != null) {
+            getViewState().showTemperature(String.valueOf(weather.getTemperature()));
+            getViewState().showWindSpeed(String.valueOf(weather.getSpeed()));
+        } else
+            getViewState().showNoWeatherError();
     }
 
     public void onChangeCityNameClick() {
@@ -53,19 +61,14 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void setCityName(String cityName) {
-        Disposable disposable = weatherInteractor.clearDb()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> saveCity(cityName));
-        unsubscribeOnDestroy(disposable);
-    }
 
-    private void saveCity(String cityName) {
-        Disposable disposable = weatherInteractor
-                .saveCityName(cityName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> loadWeather());
+
+        Observable clearDbObservable = weatherInteractor.clearDb();
+        Observable saveCityObservable = weatherInteractor.saveCityName(cityName);
+
+        Disposable disposable = Observable.concat(clearDbObservable, saveCityObservable)
+                .subscribe(s -> loadWeather());
+
         unsubscribeOnDestroy(disposable);
     }
 }

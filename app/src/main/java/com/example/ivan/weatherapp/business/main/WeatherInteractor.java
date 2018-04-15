@@ -33,10 +33,10 @@ public class WeatherInteractor {
         this.addressRepository = addressRepository;
     }
 
-    public Observable<String> getSavedCityLocation() {
+    private Observable<String> getSavedCityLocation() {
         return storageRepository.getSavedCityName()
                 .flatMap(dbCities -> Observable.just(dbCities.get(0).getCityName()))
-                .doOnNext(s -> Log.d("CityName", s))
+
                 .flatMap(s -> {
                     if (TextUtils.isEmpty(s))
                         throw new NoCityNameExeption();
@@ -62,7 +62,10 @@ public class WeatherInteractor {
 
     private Observable<WeatherResponse> getWeatherByCityNameFromNetwork() {
         return getSavedCityLocation()
-                .flatMap(s -> weatherRepository.getWeather(s));
+                .flatMap(s -> weatherRepository.getWeather(s))
+                .doOnError(throwable -> {
+                    throw new NoCityNameExeption();
+                });
     }
 
     private Observable<Weather> getSavedWeather() {
