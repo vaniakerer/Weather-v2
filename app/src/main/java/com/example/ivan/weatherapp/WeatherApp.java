@@ -9,6 +9,7 @@ import com.example.ivan.weatherapp.di.weather.WeatherComponent;
 import com.example.ivan.weatherapp.di.weather.WeatherModule;
 import com.facebook.stetho.Stetho;
 
+import io.realm.Realm;
 import ru.arturvasilov.sqlite.core.SQLite;
 
 /**
@@ -26,13 +27,14 @@ public class WeatherApp extends Application {
         if (sInstance == null)
             sInstance = this;
 
-        initSQLite();
+
+        initRealm();
         initStetho();
         initAppComponent();
     }
 
-    private void initSQLite() {
-        SQLite.initialize(this);
+    private void initRealm() {
+        Realm.init(this);
     }
 
     private void initStetho() {

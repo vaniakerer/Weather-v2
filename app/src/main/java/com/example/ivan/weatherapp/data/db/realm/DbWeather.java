@@ -1,13 +1,15 @@
-package com.example.ivan.weatherapp.entity.db;
+package com.example.ivan.weatherapp.data.db.realm;
 
 
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
+
+import io.realm.RealmObject;
 
 /**
  * Created by ivan
  */
 
-public class DbWeather {
+public class DbWeather extends RealmObject{
     private double temperature;
     private double windSpeed;
 

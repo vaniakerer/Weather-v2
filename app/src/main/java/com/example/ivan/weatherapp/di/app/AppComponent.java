@@ -20,7 +20,7 @@ import ru.arturvasilov.sqlite.rx.RxSQLite;
  */
 
 @Singleton
-@Component(modules = {ApiModule.class, RetrofitModule.class, ContextModule.class, UtilsModule.class, SQLiteModule.class})
+@Component(modules = {ApiModule.class, RetrofitModule.class, ContextModule.class, UtilsModule.class})
 public interface AppComponent {
     WeatherComponent plusWeatherComponent(WeatherModule weatherModule);
 }

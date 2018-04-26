@@ -110,7 +110,9 @@ public class MainActivity extends BaseActivity implements MainView {
     public void showChangeCityNameDialog(String cityName) {
         new MaterialDialog.Builder(MainActivity.this)
                 .title(R.string.city_name)
-                .input(getString(R.string.input_city_name), cityName, false, (dialog, input) -> presenter.setCityName(input.toString()))
+                .input(getString(R.string.input_city_name), cityName, false, (dialog, input) -> {
+                    presenter.setCityName(input.toString());
+                })
                 .build()
                 .show();
     }
@@ -119,7 +121,9 @@ public class MainActivity extends BaseActivity implements MainView {
     public void showChangeCityNameDialog() {
         new MaterialDialog.Builder(MainActivity.this)
                 .title(R.string.city_name)
-                .input(getString(R.string.input_city_name), "", false, (dialog, input) -> presenter.setCityName(input.toString()))
+                .input(getString(R.string.input_city_name), "", false, (dialog, input) -> {
+                    presenter.setCityName(input.toString());
+                })
                 .build()
                 .show();
     }

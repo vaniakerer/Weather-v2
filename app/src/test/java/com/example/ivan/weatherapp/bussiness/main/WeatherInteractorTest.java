@@ -4,8 +4,8 @@ import com.example.ivan.weatherapp.business.main.WeatherInteractor;
 import com.example.ivan.weatherapp.data.repository.AddressRepository;
 import com.example.ivan.weatherapp.data.repository.StorageRepository;
 import com.example.ivan.weatherapp.data.repository.WeatherRepository;
-import com.example.ivan.weatherapp.entity.db.DbCity;
-import com.example.ivan.weatherapp.entity.db.DbWeather;
+import com.example.ivan.weatherapp.data.db.realm.DbCity;
+import com.example.ivan.weatherapp.data.db.realm.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 
 import org.junit.Before;
@@ -16,14 +16,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
-import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;

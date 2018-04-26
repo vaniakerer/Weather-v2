@@ -1,16 +1,16 @@
 package com.example.ivan.weatherapp.presentation.main;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
-import com.example.ivan.weatherapp.business.main.AddressInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.business.main.exeption.CannotConvertAddressExeption;
-import com.example.ivan.weatherapp.business.main.exeption.NoCityNameExeption;
 import com.example.ivan.weatherapp.entity.ui.Weather;
 import com.example.ivan.weatherapp.presentation.base.BasePresenter;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -34,6 +34,7 @@ public class MainPresenter extends BasePresenter<MainView> {
                     handleSuccessWeatherLoad(weather);
                 }, error -> {
                     getViewState().hideProgress();
+                    getViewState().showError(error.getMessage());
                 }, () -> {
                 });
 
@@ -52,7 +53,7 @@ public class MainPresenter extends BasePresenter<MainView> {
     public void onChangeCityNameClick() {
         Disposable disposable = weatherInteractor
                 .getSavedCityName()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> getViewState().showChangeCityNameDialog(s),
                         throwable -> getViewState().showChangeCityNameDialog());
@@ -61,13 +62,12 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void setCityName(String cityName) {
-
-
         Observable clearDbObservable = weatherInteractor.clearDb();
         Observable saveCityObservable = weatherInteractor.saveCityName(cityName);
 
-        Disposable disposable = Observable.concat(clearDbObservable, saveCityObservable)
-                .subscribe(s -> loadWeather());
+        //TODO в теорії запис нового міста може спрацювати раніше, ніж видалення..
+        Disposable disposable = Observable.combineLatest(clearDbObservable, saveCityObservable, (o, o2) -> o)
+                .subscribe(s -> loadWeather(), throwable -> getViewState().showError(throwable.toString()));
 
         unsubscribeOnDestroy(disposable);
     }

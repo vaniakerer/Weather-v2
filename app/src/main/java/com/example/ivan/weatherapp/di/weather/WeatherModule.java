@@ -5,6 +5,9 @@ import android.location.Geocoder;
 import com.example.ivan.weatherapp.api.DarkSkyApi;
 import com.example.ivan.weatherapp.business.main.AddressInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
+import com.example.ivan.weatherapp.data.db.realm.CityDataProvider;
+import com.example.ivan.weatherapp.data.db.realm.WeatherDataProvider;
+import com.example.ivan.weatherapp.data.db.realm.provider.RealmProvider;
 import com.example.ivan.weatherapp.data.repository.AddressRepository;
 import com.example.ivan.weatherapp.data.repository.StorageRepository;
 import com.example.ivan.weatherapp.data.repository.WeatherRepository;
@@ -49,9 +52,20 @@ public class WeatherModule {
 
     @Provides
     @WeatherScope
-    public StorageRepository provideStorageRepository(RxSQLite sqLite) {
-        return new StorageRepository(sqLite);
+    public StorageRepository provideStorageRepository(CityDataProvider cityDataProvider, WeatherDataProvider weatherDataProvider) {
+        return new StorageRepository(cityDataProvider, weatherDataProvider);
     }
 
+    @Provides
+    @WeatherScope
+    public CityDataProvider provideCityDataProvider(RealmProvider realmProvider) {
+        return new CityDataProvider(realmProvider);
+    }
+
+    @Provides
+    @WeatherScope
+    public WeatherDataProvider provideWeatherDataProvider(RealmProvider realmProvider) {
+        return new WeatherDataProvider(realmProvider);
+    }
 
 }

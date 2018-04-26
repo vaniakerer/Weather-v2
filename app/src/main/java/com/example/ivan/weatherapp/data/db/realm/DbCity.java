@@ -1,11 +1,13 @@
-package com.example.ivan.weatherapp.entity.db;
+package com.example.ivan.weatherapp.data.db.realm;
 
+
+import io.realm.RealmObject;
 
 /**
  * Created by ivan
  */
 
-public class DbCity {
+public class DbCity extends RealmObject {
     private String cityName;
 
     public DbCity() {

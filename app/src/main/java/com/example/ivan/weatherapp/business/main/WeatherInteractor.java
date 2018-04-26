@@ -3,10 +3,9 @@ package com.example.ivan.weatherapp.business.main;
 import android.util.Log;
 
 import com.example.ivan.weatherapp.business.main.exeption.NoCityNameExeption;
-import com.example.ivan.weatherapp.business.main.exeption.NoSavedWeatherException;
 import com.example.ivan.weatherapp.data.repository.AddressRepository;
-import com.example.ivan.weatherapp.entity.db.DbCity;
-import com.example.ivan.weatherapp.entity.db.DbWeather;
+import com.example.ivan.weatherapp.data.db.realm.DbCity;
+import com.example.ivan.weatherapp.data.db.realm.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 import com.example.ivan.weatherapp.entity.ui.Weather;
 import com.example.ivan.weatherapp.data.repository.StorageRepository;
@@ -14,8 +13,10 @@ import com.example.ivan.weatherapp.data.repository.WeatherRepository;
 import com.example.ivan.weatherapp.utils.TextUtils;
 
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
+import io.reactivex.functions.Consumer;
+import io.realm.RealmResults;
 
 /**
  * Created by ivan
@@ -36,7 +37,6 @@ public class WeatherInteractor {
     private Observable<String> getSavedCityLocation() {
         return storageRepository.getSavedCityName()
                 .flatMap(dbCities -> Observable.just(dbCities.get(0).getCityName()))
-
                 .flatMap(s -> {
                     if (TextUtils.isEmpty(s))
                         throw new NoCityNameExeption();
@@ -48,14 +48,19 @@ public class WeatherInteractor {
 
     public Observable<String> getSavedCityName() {
         return storageRepository.getSavedCityName()
+                .doOnNext(dbCities -> Log.d("Afasf", dbCities.toString()))
                 .flatMap(dbCities -> Observable.just(dbCities.get(0).getCityName()));
     }
 
 
     public Observable<Weather> getWeather() {
         return getWeatherByCityNameFromNetwork()
+                .doOnNext(response -> Log.d("Afasf", response.toString()))
                 .flatMap(this::reSaveWeather)
+                .doOnError(Throwable::printStackTrace)
                 .flatMap(this::mapSuccessResponse)
+                .doOnError(Throwable::printStackTrace)
+                .doOnNext(weather -> Log.d("Afasf", weather.toString()))
                 .onErrorResumeNext(getSavedWeather())
                 .doOnError(Throwable::printStackTrace);
     }
@@ -64,6 +69,7 @@ public class WeatherInteractor {
         return getSavedCityLocation()
                 .flatMap(s -> weatherRepository.getWeather(s))
                 .doOnError(throwable -> {
+                    throwable.printStackTrace();
                     throw new NoCityNameExeption();
                 });
     }

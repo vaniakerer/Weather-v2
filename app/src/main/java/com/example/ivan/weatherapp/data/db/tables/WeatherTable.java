@@ -3,10 +3,8 @@ package com.example.ivan.weatherapp.data.db.tables;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
-import com.example.ivan.weatherapp.entity.db.DbWeather;
-import com.example.ivan.weatherapp.entity.ui.Weather;
+import com.example.ivan.weatherapp.data.db.realm.DbWeather;
 
 import org.sqlite.database.sqlite.SQLiteDatabase;
 

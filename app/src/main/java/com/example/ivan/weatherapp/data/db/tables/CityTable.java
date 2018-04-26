@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.example.ivan.weatherapp.entity.db.DbCity;
+import com.example.ivan.weatherapp.data.db.realm.DbCity;
 
 import org.sqlite.database.sqlite.SQLiteDatabase;
 
