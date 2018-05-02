@@ -2,7 +2,7 @@ package com.example.ivan.weatherapp.di.app;
 
 import android.content.Context;
 
-import com.example.ivan.weatherapp.data.db.realm.provider.RealmProvider;
+import com.example.ivan.weatherapp.data.database.provider.RealmProvider;
 
 import javax.inject.Singleton;
 

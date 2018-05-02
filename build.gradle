@@ -8,6 +8,7 @@ buildscript {
         maven {
             url 'http://oss.jfrog.org/artifactory/oss-snapshot-local'
         }
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.0'
@@ -25,6 +26,7 @@ allprojects {
         maven {
             url 'http://oss.jfrog.org/artifactory/oss-snapshot-local'
         }
+        maven { url 'https://github.com/WickeDev/stetho-realm/raw/master/maven-repo' }
     }
 }
 

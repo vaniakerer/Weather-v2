@@ -1,6 +1,7 @@
 package com.example.ivan.weatherapp;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.example.ivan.weatherapp.di.app.AppComponent;
 import com.example.ivan.weatherapp.di.app.ContextModule;
@@ -8,9 +9,9 @@ import com.example.ivan.weatherapp.di.app.DaggerAppComponent;
 import com.example.ivan.weatherapp.di.weather.WeatherComponent;
 import com.example.ivan.weatherapp.di.weather.WeatherModule;
 import com.facebook.stetho.Stetho;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import io.realm.Realm;
-import ru.arturvasilov.sqlite.core.SQLite;
 
 /**
  * Created by ivan
@@ -27,6 +28,7 @@ public class WeatherApp extends Application {
         if (sInstance == null)
             sInstance = this;
 
+        Log.d("Sync", "onCreate()");
 
         initRealm();
         initStetho();
@@ -38,25 +40,12 @@ public class WeatherApp extends Application {
     }
 
     private void initStetho() {
-        // Create an InitializerBuilder
-        Stetho.InitializerBuilder initializerBuilder =
-                Stetho.newInitializerBuilder(this);
 
-        // Enable Chrome DevTools
-        initializerBuilder.enableWebKitInspector(
-                Stetho.defaultInspectorModulesProvider(this)
-        );
-
-        // Enable command line interface
-        initializerBuilder.enableDumpapp(
-                Stetho.defaultDumperPluginsProvider(this)
-        );
-
-        // Use the InitializerBuilder to generate an Initializer
-        Stetho.Initializer initializer = initializerBuilder.build();
-
-        // Initialize Stetho with the Initializer
-        Stetho.initialize(initializer);
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());
     }
 
     private void initAppComponent() {

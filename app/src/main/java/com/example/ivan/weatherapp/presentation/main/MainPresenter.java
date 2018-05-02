@@ -7,6 +7,7 @@ import com.example.ivan.weatherapp.business.main.WeatherInteractor;
 import com.example.ivan.weatherapp.entity.ui.Weather;
 import com.example.ivan.weatherapp.presentation.base.BasePresenter;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -33,6 +34,7 @@ public class MainPresenter extends BasePresenter<MainView> {
                     getViewState().hideProgress();
                     handleSuccessWeatherLoad(weather);
                 }, error -> {
+                    Log.d("AFSasfasfasf", "loadWeather: " + error.getClass().getName());
                     getViewState().hideProgress();
                     getViewState().showError(error.getMessage());
                 }, () -> {
@@ -62,11 +64,11 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void setCityName(String cityName) {
-        Observable clearDbObservable = weatherInteractor.clearDb();
-        Observable saveCityObservable = weatherInteractor.saveCityName(cityName);
+        Flowable clearDbObservable = weatherInteractor.clearDb();
+        Flowable saveCityObservable = weatherInteractor.saveCityName(cityName);
 
         //TODO в теорії запис нового міста може спрацювати раніше, ніж видалення..
-        Disposable disposable = Observable.combineLatest(clearDbObservable, saveCityObservable, (o, o2) -> o)
+        Disposable disposable = Flowable.combineLatest(clearDbObservable, saveCityObservable, (o, o2) -> o)
                 .subscribe(s -> loadWeather(), throwable -> getViewState().showError(throwable.toString()));
 
         unsubscribeOnDestroy(disposable);

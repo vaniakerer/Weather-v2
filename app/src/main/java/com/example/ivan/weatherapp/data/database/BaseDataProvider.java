@@ -1,6 +1,6 @@
-package com.example.ivan.weatherapp.data.db.realm;
+package com.example.ivan.weatherapp.data.database;
 
-import com.example.ivan.weatherapp.data.db.realm.provider.RealmProvider;
+import com.example.ivan.weatherapp.data.database.provider.RealmProvider;
 
 import io.realm.Realm;
 

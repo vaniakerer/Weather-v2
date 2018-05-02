@@ -3,6 +3,7 @@ package com.example.ivan.weatherapp.di.app;
 import android.content.Context;
 import android.location.Geocoder;
 
+import com.example.ivan.weatherapp.utils.CustomAnimationUtils;
 import com.example.ivan.weatherapp.utils.Prefs;
 
 import java.util.Locale;
@@ -26,7 +27,13 @@ public class UtilsModule {
 
     @Provides
     @Singleton
-    public Geocoder getGeocoder(Context context) {
+    public Geocoder provideGeocoder(Context context) {
         return new Geocoder(context, Locale.US);
+    }
+
+    @Provides
+    @Singleton
+    public CustomAnimationUtils provideCustomAnimationUtils(){
+        return new CustomAnimationUtils();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.data.db.realm;
+package com.example.ivan.weatherapp.data.database.model;
 
 
 import io.realm.RealmObject;
@@ -9,6 +9,7 @@ import io.realm.RealmObject;
 
 public class DbCity extends RealmObject {
     private String cityName;
+
 
     public DbCity() {
     }

@@ -1,6 +1,6 @@
 package com.example.ivan.weatherapp.entity.ui;
 
-import com.example.ivan.weatherapp.data.db.realm.DbWeather;
+import com.example.ivan.weatherapp.data.database.model.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 
 /**

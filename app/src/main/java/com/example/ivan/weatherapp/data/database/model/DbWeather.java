@@ -1,4 +1,4 @@
-package com.example.ivan.weatherapp.data.db.realm;
+package com.example.ivan.weatherapp.data.database.model;
 
 
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
@@ -9,9 +9,10 @@ import io.realm.RealmObject;
  * Created by ivan
  */
 
-public class DbWeather extends RealmObject{
+public class DbWeather extends RealmObject {
     private double temperature;
     private double windSpeed;
+    private double summOfTemperatureAndWindSpeed;
 
     public double getTemperature() {
         return temperature;
@@ -29,11 +30,15 @@ public class DbWeather extends RealmObject{
         this.windSpeed = windSpeed;
     }
 
+    public void setSummOfTemperatureAndWindSpeed(double summOfTemperatureAndWindSpeed) {
+        this.summOfTemperatureAndWindSpeed = summOfTemperatureAndWindSpeed;
+    }
+
     public static DbWeather fromWeatherResponse(WeatherResponse weatherResponse) {
         DbWeather dbWeather = new DbWeather();
         dbWeather.setTemperature(weatherResponse.getDailyDTO().getData().get(0).getTemperatureMin());
         dbWeather.setWindSpeed(weatherResponse.getDailyDTO().getData().get(0).getWindSpeed());
-
+        dbWeather.setSummOfTemperatureAndWindSpeed(dbWeather.getTemperature() + dbWeather.getWindSpeed());
         return dbWeather;
     }
 }

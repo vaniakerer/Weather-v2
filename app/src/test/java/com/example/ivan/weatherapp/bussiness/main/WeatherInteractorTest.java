@@ -1,11 +1,11 @@
 package com.example.ivan.weatherapp.bussiness.main;
 
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.data.repository.AddressRepository;
-import com.example.ivan.weatherapp.data.repository.StorageRepository;
-import com.example.ivan.weatherapp.data.repository.WeatherRepository;
-import com.example.ivan.weatherapp.data.db.realm.DbCity;
-import com.example.ivan.weatherapp.data.db.realm.DbWeather;
+import com.example.ivan.weatherapp.data.repository.AddressRepositoryImpl;
+import com.example.ivan.weatherapp.data.repository.StorageRepositoryImpl;
+import com.example.ivan.weatherapp.data.repository.WeatherRepositoryImpl;
+import com.example.ivan.weatherapp.data.database.model.DbCity;
+import com.example.ivan.weatherapp.data.database.model.DbWeather;
 import com.example.ivan.weatherapp.entity.dto.weather.WeatherResponse;
 
 import org.junit.Before;
@@ -43,11 +43,11 @@ public class WeatherInteractorTest {
     private static final String TEST_CITY_NAME = "Kyiv";
 
     @Mock
-    WeatherRepository weatherRepository;
+    WeatherRepositoryImpl weatherRepository;
     @Mock
-    StorageRepository storageRepository;
+    StorageRepositoryImpl storageRepository;
     @Mock
-    AddressRepository addressRepository;
+    AddressRepositoryImpl addressRepository;
     @Mock
     WeatherResponse weatherResponse;
 

@@ -1,10 +1,8 @@
-package com.example.ivan.weatherapp.data.db.realm;
+package com.example.ivan.weatherapp.data.database;
 
-import com.example.ivan.weatherapp.data.db.realm.provider.RealmProvider;
+import com.example.ivan.weatherapp.data.database.model.DbWeather;
+import com.example.ivan.weatherapp.data.database.provider.RealmProvider;
 
-import java.util.List;
-
-import io.reactivex.Flowable;
 import io.realm.RealmResults;
 
 /**

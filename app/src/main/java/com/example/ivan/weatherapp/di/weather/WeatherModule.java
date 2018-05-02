@@ -3,21 +3,20 @@ package com.example.ivan.weatherapp.di.weather;
 import android.location.Geocoder;
 
 import com.example.ivan.weatherapp.api.DarkSkyApi;
-import com.example.ivan.weatherapp.business.main.AddressInterceptor;
 import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.data.db.realm.CityDataProvider;
-import com.example.ivan.weatherapp.data.db.realm.WeatherDataProvider;
-import com.example.ivan.weatherapp.data.db.realm.provider.RealmProvider;
-import com.example.ivan.weatherapp.data.repository.AddressRepository;
-import com.example.ivan.weatherapp.data.repository.StorageRepository;
-import com.example.ivan.weatherapp.data.repository.WeatherRepository;
-
-import javax.inject.Singleton;
+import com.example.ivan.weatherapp.business.repository.AddressRepository;
+import com.example.ivan.weatherapp.business.repository.StorageRepository;
+import com.example.ivan.weatherapp.business.repository.WeatherRepositoty;
+import com.example.ivan.weatherapp.data.database.CityDataProvider;
+import com.example.ivan.weatherapp.data.database.WeatherDataProvider;
+import com.example.ivan.weatherapp.data.database.provider.RealmProvider;
+import com.example.ivan.weatherapp.data.repository.AddressRepositoryImpl;
+import com.example.ivan.weatherapp.data.repository.StorageRepositoryImpl;
+import com.example.ivan.weatherapp.data.repository.WeatherRepositoryImpl;
+import com.example.ivan.weatherapp.presentation.service.sync_adapter.SyncAdapterPresenter;
 
 import dagger.Module;
 import dagger.Provides;
-
-import ru.arturvasilov.sqlite.rx.RxSQLite;
 
 /**
  * Created by ivan
@@ -28,32 +27,26 @@ public class WeatherModule {
 
     @Provides
     @WeatherScope
-    public WeatherInteractor getWeatherInteractor(WeatherRepository repository, StorageRepository storageRepository, AddressRepository addressRepository) {
+    public WeatherInteractor getWeatherInteractor(WeatherRepositoty repository, StorageRepository storageRepository, AddressRepository addressRepository) {
         return new WeatherInteractor(repository, storageRepository, addressRepository);
     }
 
     @Provides
     @WeatherScope
-    public WeatherRepository getWetherRepository(DarkSkyApi api) {
-        return new WeatherRepository(api);
-    }
-
-    @Provides
-    @WeatherScope
-    public AddressInterceptor getAddressInterceptor(AddressRepository addressRepository) {
-        return new AddressInterceptor(addressRepository);
+    public WeatherRepositoty getWetherRepository(DarkSkyApi api) {
+        return new WeatherRepositoryImpl(api);
     }
 
     @Provides
     @WeatherScope
     public AddressRepository getAddressRepository(Geocoder geocoder) {
-        return new AddressRepository(geocoder);
+        return new AddressRepositoryImpl(geocoder);
     }
 
     @Provides
     @WeatherScope
     public StorageRepository provideStorageRepository(CityDataProvider cityDataProvider, WeatherDataProvider weatherDataProvider) {
-        return new StorageRepository(cityDataProvider, weatherDataProvider);
+        return new StorageRepositoryImpl(cityDataProvider, weatherDataProvider);
     }
 
     @Provides
@@ -67,5 +60,4 @@ public class WeatherModule {
     public WeatherDataProvider provideWeatherDataProvider(RealmProvider realmProvider) {
         return new WeatherDataProvider(realmProvider);
     }
-
 }
