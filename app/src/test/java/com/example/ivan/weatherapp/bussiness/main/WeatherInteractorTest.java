@@ -1,8 +1,7 @@
 package com.example.ivan.weatherapp.bussiness.main;
 
-import com.example.ivan.weatherapp.business.main.WeatherInteractor;
+import com.example.ivan.weatherapp.domain.main.WeatherInteractor;
 import com.example.ivan.weatherapp.data.repository.AddressRepositoryImpl;
-import com.example.ivan.weatherapp.data.repository.StorageRepositoryImpl;
 import com.example.ivan.weatherapp.data.repository.WeatherRepositoryImpl;
 import com.example.ivan.weatherapp.data.database.model.DbCity;
 import com.example.ivan.weatherapp.data.database.model.DbWeather;

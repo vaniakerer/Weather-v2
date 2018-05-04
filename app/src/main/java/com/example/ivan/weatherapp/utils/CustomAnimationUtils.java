@@ -1,5 +1,6 @@
 package com.example.ivan.weatherapp.utils;
 
+import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.Keyframe;
@@ -8,6 +9,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.renderscript.Sampler;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -138,5 +140,66 @@ public class CustomAnimationUtils {
         animatorSet.play(animator1).after(animator);
 //        animatorSet.play(fadeAnimator2).after(animator1);
         animatorSet.start();*/
+    }
+
+    public void animateCloudIcon(ViewGroup viewGroup, ImageView imageView) {
+        Keyframe kf1 = Keyframe.ofFloat(0, 0);
+        Keyframe kf2 = Keyframe.ofFloat(0.4f, 0);
+        Keyframe kf3 = Keyframe.ofFloat(.8f, 1.2f);
+        Keyframe kf4 = Keyframe.ofFloat(1f, 1f);
+
+        PropertyValuesHolder widthValuesHolder = PropertyValuesHolder.ofKeyframe(View.SCALE_X, kf1, kf2, kf3, kf4);
+        PropertyValuesHolder heigthValuesHolder = PropertyValuesHolder.ofKeyframe(View.SCALE_Y, kf1, kf2, kf3, kf4);
+
+        ObjectAnimator widthAnimator = ObjectAnimator.ofPropertyValuesHolder(imageView, widthValuesHolder);
+        ObjectAnimator heigthAnimator = ObjectAnimator.ofPropertyValuesHolder(imageView, heigthValuesHolder);
+
+        widthAnimator.setDuration(800);
+        heigthAnimator.setDuration(800);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(widthAnimator, heigthAnimator);
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                animateSplashContainer(viewGroup, imageView);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+
+        animatorSet.start();
+    }
+
+    public void animateSplashContainer(ViewGroup viewGroup, ImageView imageView) {
+
+        Keyframe kf1 = Keyframe.ofFloat(0, 1);
+        Keyframe kf2 = Keyframe.ofFloat(0.9f, 0.1f);
+        Keyframe kf3 = Keyframe.ofFloat(1f, 0);
+
+        PropertyValuesHolder containerAlphaAnimator = PropertyValuesHolder.ofKeyframe(View.ALPHA, kf1, kf2, kf3);
+
+        ObjectAnimator widthAnimator = ObjectAnimator.ofPropertyValuesHolder(viewGroup, containerAlphaAnimator);
+        ObjectAnimator iconTransitionAnimator = ObjectAnimator.ofFloat(imageView, View.TRANSLATION_Y, 0, imageView.getY());
+
+        widthAnimator.setDuration(800);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(widthAnimator, iconTransitionAnimator);
+        animatorSet.start();
     }
 }

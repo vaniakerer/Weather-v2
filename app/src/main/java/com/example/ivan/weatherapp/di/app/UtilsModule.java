@@ -4,7 +4,6 @@ import android.content.Context;
 import android.location.Geocoder;
 
 import com.example.ivan.weatherapp.utils.CustomAnimationUtils;
-import com.example.ivan.weatherapp.utils.Prefs;
 
 import java.util.Locale;
 
@@ -19,11 +18,6 @@ import dagger.Provides;
 
 @Module
 public class UtilsModule {
-    @Provides
-    @Singleton
-    public Prefs providePreferences(Context context) {
-        return new Prefs(context);
-    }
 
     @Provides
     @Singleton

@@ -1,21 +1,17 @@
 package com.example.ivan.weatherapp.presentation.main;
 
-import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.business.main.exeption.NoCityNameExeption;
-import com.example.ivan.weatherapp.entity.ui.Weather;
+import com.example.ivan.weatherapp.domain.main.WeatherInteractor;
+import com.example.ivan.weatherapp.domain.model.Weather;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
 
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;

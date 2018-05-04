@@ -1,17 +1,14 @@
 package com.example.ivan.weatherapp.presentation.main;
 
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
-import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.entity.ui.Weather;
+import com.example.ivan.weatherapp.data.exception.NoSavedCityException;
+import com.example.ivan.weatherapp.domain.main.WeatherInteractor;
+import com.example.ivan.weatherapp.domain.model.Weather;
 import com.example.ivan.weatherapp.presentation.base.BasePresenter;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -34,9 +31,12 @@ public class MainPresenter extends BasePresenter<MainView> {
                     getViewState().hideProgress();
                     handleSuccessWeatherLoad(weather);
                 }, error -> {
-                    Log.d("AFSasfasfasf", "loadWeather: " + error.getClass().getName());
+                    error.printStackTrace();
                     getViewState().hideProgress();
-                    getViewState().showError(error.getMessage());
+                    if (error instanceof NoSavedCityException)
+                        getViewState().showChangeCityNameDialog();
+                    else
+                        getViewState().showError(error.getMessage());
                 }, () -> {
                 });
 

@@ -2,52 +2,36 @@ package com.example.ivan.weatherapp.presentation.main;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ViewAnimator;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.ivan.weatherapp.R;
 import com.example.ivan.weatherapp.WeatherApp;
-import com.example.ivan.weatherapp.business.main.WeatherInteractor;
+import com.example.ivan.weatherapp.domain.main.WeatherInteractor;
 import com.example.ivan.weatherapp.presentation.base.view.BaseActivity;
 import com.example.ivan.weatherapp.utils.CustomAnimationUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.Observable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,9 +39,6 @@ import javax.inject.Inject;
 
 
 public class MainActivity extends BaseActivity implements MainView {
-    /*public static final String AUTHORITY = "com.example.ivan.weatherapp.provider";
-    public static final String ACCOUNT_TYPE = "com.ivan.weather_app";
-    public static final String ACCOUNT = "weatherapp_account";*/
 
     @InjectPresenter
     MainPresenter presenter;
@@ -73,16 +54,18 @@ public class MainActivity extends BaseActivity implements MainView {
     private TextView cityName;
     private ProgressBar progressBar;
 
+    private ViewGroup splashContainer;
+    private ImageView splashImage;
 
-    // Constants
-    // The authority for the sync adapter's content provider
+    private ObjectAnimator heigthAnimator;
+    private ObjectAnimator widthAnimator;
+
+    private AnimatorSet animatorSet;
+
     public static final String AUTHORITY = "com.example.ivan.weatherapp.provider";
-    // An account type, in the form of a domain name
     public static final String ACCOUNT_TYPE = "com.example.ivan.weatherapp";
-    // The account name
     public static final String ACCOUNT = "dummyaccount";
-    // Instance fields
-    Account mAccount;
+    private Account mAccount;
 
     @ProvidePresenter
     MainPresenter providePresenter() {
@@ -96,9 +79,10 @@ public class MainActivity extends BaseActivity implements MainView {
         setContentView(R.layout.activity_main);
         initViews();
 
+
         presenter.loadWeather();
 
-     /*   Bundle b = new Bundle();
+/*        Bundle b = new Bundle();
         // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
@@ -107,6 +91,16 @@ public class MainActivity extends BaseActivity implements MainView {
                 AUTHORITY,                 // Content authority
                 b);*/
 
+        mAccount = CreateSyncAccount(this);
+
+        ContentResolver.addPeriodicSync(
+                mAccount,
+                AUTHORITY,
+                Bundle.EMPTY,
+                1000);
+
+      /*  ins();
+        stream();*/
     }
 
     protected void initViews() {
@@ -116,8 +110,16 @@ public class MainActivity extends BaseActivity implements MainView {
         temperatureTv = findViewById(R.id.current_temperature);
         windSpeedTv = findViewById(R.id.current_wind_speed);
         progressBar = findViewById(R.id.progress);
+        splashContainer = findViewById(R.id.splash_container);
+        splashImage = findViewById(R.id.splash_image);
 
         chageCity.setOnClickListener(view -> presenter.onChangeCityNameClick());
+
+        animageSplash();
+    }
+
+    private void animageSplash() {
+        animationUtils.animateCloudIcon(splashContainer, splashImage);
     }
 
     @Override
@@ -217,4 +219,74 @@ public class MainActivity extends BaseActivity implements MainView {
 
         return newAccount;
     }
+
+    private void ins() {
+        Pattern pattern = Pattern.compile("([\\w\\.])+\\w+@{1}([\\w\\.-]+).{1}\\w{2,5}");
+        Matcher matcher = pattern.matcher("asdasda@as.qw.www");
+        Log.d("asfasf", matcher.matches() + "");
+        Matcher matcher1 = pattern.matcher("as.s.w@asf.wwwwww");
+
+        while (matcher1.find())
+            Log.d("asfasf", matcher1.group() + " ");
+
+
+        Pattern ipPattern = Pattern.compile("(\\d{1,3}\\.{1}){3}(\\d{1,3}\\:){1}\\d{4}");
+        Matcher matcher2 = ipPattern.matcher("192.129.2.2:5555");
+        Log.d("asfasf--", matcher2.matches() + " ");
+        while (matcher2.find())
+            Log.d("asfasf--", matcher2.group());
+
+    }
+
+    private void stream() {
+        try {
+            InputStream fileInputStream = getAssets().open("json.json");
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(fileInputStream));
+            Gson gson = new GsonBuilder().create();
+            jsonReader.beginArray();
+            while (jsonReader.hasNext()) {
+                Use use = gson.fromJson(jsonReader, Use.class);
+                Log.d("User", use.toString());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static class Use {
+        String name;
+        int age;
+        long birt;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public long getBirt() {
+            return birt;
+        }
+
+        public void setBirt(long birt) {
+            this.birt = birt;
+        }
+
+        @Override
+        public String toString() {
+            return "name : " + name;
+        }
+    }
+
 }

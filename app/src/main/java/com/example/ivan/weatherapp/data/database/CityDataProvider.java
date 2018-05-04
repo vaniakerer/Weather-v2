@@ -22,7 +22,6 @@ public class CityDataProvider extends BaseDataProvider {
     }
 
     public Flowable<RealmResults<DbCity>> getSavedCity() {
-
         return Flowable.create(e -> {
             RealmResults<DbCity> cities = getRealm().where(DbCity.class).findAll();
             if (cities != null && !cities.isEmpty()) {
@@ -37,10 +36,10 @@ public class CityDataProvider extends BaseDataProvider {
         DbCity returnedDbCity = null;
         try {
             returnedDbCity = getRealm().copyToRealm(dbCity);
-            getRealm().commitTransaction();
         } catch (Exception e) {
             getRealm().cancelTransaction();
         } finally {
+            getRealm().commitTransaction();
             getRealm().close();
         }
 
@@ -52,8 +51,9 @@ public class CityDataProvider extends BaseDataProvider {
         try {
             dbCity.deleteFromRealm();
         } catch (Exception e) {
-            getRealm().commitTransaction();
+            getRealm().cancelTransaction();
         } finally {
+            getRealm().commitTransaction();
             getRealm().close();
         }
     }

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
@@ -35,6 +36,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+
         <service
             android:name="com.example.ivan.weatherapp.presentation.service.WeatherSyncService"
             android:exported="true"
@@ -46,11 +48,9 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-
         <provider
-            android:name=".provider.FeedProvider"
+            android:name=".provider.CProvider"
             android:authorities="com.example.ivan.weatherapp.provider"
             android:exported="false" />
     </application>
-
 </manifest>

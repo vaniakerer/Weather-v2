@@ -108,7 +108,6 @@ public class CustomProgress extends View {
         canvas.drawRect(new RectF(0, getHeight() - 50, selectedX, getHeight() / 2 - 50), linePaint);
         canvas.drawCircle(selectedX, getHeight() / 4, getHeight() / 4, circlePaint);
 
-        Log.d("test_gest", isPressed + " ");
         if (isPressed) {
             innerCircleWidth += 1;
             canvas.drawCircle(selectedX, getHeight() / 2, innerCircleWidth, innerCirclePaint);

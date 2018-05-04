@@ -28,8 +28,6 @@ public class WeatherApp extends Application {
         if (sInstance == null)
             sInstance = this;
 
-        Log.d("Sync", "onCreate()");
-
         initRealm();
         initStetho();
         initAppComponent();
@@ -40,7 +38,6 @@ public class WeatherApp extends Application {
     }
 
     private void initStetho() {
-
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))

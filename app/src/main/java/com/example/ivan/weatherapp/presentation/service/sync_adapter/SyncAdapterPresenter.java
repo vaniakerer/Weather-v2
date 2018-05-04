@@ -1,12 +1,9 @@
 package com.example.ivan.weatherapp.presentation.service.sync_adapter;
 
-import android.util.Log;
-
-import com.example.ivan.weatherapp.business.main.WeatherInteractor;
-import com.example.ivan.weatherapp.entity.ui.Weather;
+import com.example.ivan.weatherapp.domain.main.WeatherInteractor;
+import com.example.ivan.weatherapp.domain.model.Weather;
 
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 /**

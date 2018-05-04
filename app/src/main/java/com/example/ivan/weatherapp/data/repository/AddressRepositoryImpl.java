@@ -3,14 +3,13 @@ package com.example.ivan.weatherapp.data.repository;
 import android.location.Address;
 import android.location.Geocoder;
 
-import com.example.ivan.weatherapp.business.main.exeption.CannotConvertAddressExeption;
-import com.example.ivan.weatherapp.business.repository.AddressRepository;
+import com.example.ivan.weatherapp.domain.main.exeption.CannotConvertAddressExeption;
+import com.example.ivan.weatherapp.domain.repository.AddressRepository;
 
 import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 
 /**
  * Created by ivan
