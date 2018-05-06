@@ -19,12 +19,12 @@ public class PagerIndicator extends View {
 
     private int pointsCount = 5;
     private int pointsRadius = 25;
-    private int pointsMargin = 50;
+    private int pointsMargin = 20;
 
     private int selectedPosition = 1;
     private int previousSelectePosition = 0;
 
-    private int selectedPointX;
+    private int selectedPointX = 50;
     private int previousSelectedPointX;
 
     private Paint unselectedPint;
@@ -73,8 +73,8 @@ public class PagerIndicator extends View {
         else
             selectedPosition = 1;
 
-        int fromX = (previousSelectePosition) * (pointsRadius * 2 + pointsMargin) - pointsMargin * 2;
-        int toX = (selectedPosition) * (pointsRadius * 2 + pointsMargin) - pointsMargin * 2;
+        int fromX = (previousSelectePosition) * (pointsRadius * 2 + pointsMargin) - pointsMargin;
+        int toX = (selectedPosition) * (pointsRadius * 2 + pointsMargin) - pointsMargin;
 
         selectedValueXAnimator = ValueAnimator.ofFloat(fromX, toX);
         selectedValueXAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -84,9 +84,7 @@ public class PagerIndicator extends View {
         });
 
         previousSelectedValueAnimator = ValueAnimator.ofFloat(toX, fromX);
-        previousSelectedValueAnimator.addUpdateListener(valueAnimator -> {
-            previousSelectedPointX = ((Float) valueAnimator.getAnimatedValue()).intValue();
-        });
+        previousSelectedValueAnimator.addUpdateListener(valueAnimator -> previousSelectedPointX = ((Float) valueAnimator.getAnimatedValue()).intValue());
 
         previousSelectedValueAnimator.start();
         selectedValueXAnimator.start();
@@ -114,7 +112,7 @@ public class PagerIndicator extends View {
 
     private int measureWidth() {
         int measureWidth;
-        measureWidth = pointsCount * (pointsRadius * 2 + pointsMargin) + getPaddingLeft() + getPaddingRight();
+        measureWidth = pointsCount * (pointsRadius * 2 + pointsMargin) + pointsMargin + getPaddingLeft() + getPaddingRight();
         return measureWidth;
     }
 

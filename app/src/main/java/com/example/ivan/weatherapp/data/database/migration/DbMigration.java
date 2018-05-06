@@ -37,12 +37,7 @@ public class DbMigration implements RealmMigration {
             weatherSchema.removeField("testTotal");
 
             weatherSchema.addField("summOfTemperatureAndWindSpeed", double.class);
-            weatherSchema.transform(new RealmObjectSchema.Function() {
-                @Override
-                public void apply(DynamicRealmObject obj) {
-                    obj.set("summOfTemperatureAndWindSpeed", ((double) obj.get("temperature")) + ((double) obj.get("windSpeed")));
-                }
-            });
+            weatherSchema.transform(obj -> obj.set("summOfTemperatureAndWindSpeed", ((double) obj.get("temperature")) + ((double) obj.get("windSpeed"))));
 
         }
 

@@ -144,7 +144,7 @@ public class CustomAnimationUtils {
 
     public void animateCloudIcon(ViewGroup viewGroup, ImageView imageView) {
         Keyframe kf1 = Keyframe.ofFloat(0, 0);
-        Keyframe kf2 = Keyframe.ofFloat(0.4f, 0);
+        Keyframe kf2 = Keyframe.ofFloat(.4f, 0);
         Keyframe kf3 = Keyframe.ofFloat(.8f, 1.2f);
         Keyframe kf4 = Keyframe.ofFloat(1f, 1f);
 

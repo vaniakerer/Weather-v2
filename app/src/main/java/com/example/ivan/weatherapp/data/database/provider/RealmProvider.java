@@ -20,7 +20,6 @@ public class RealmProvider {
     public RealmProvider(Context application) {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name("weather.realm")
-               // .migration(new DbMigration())
                 .schemaVersion(4)
                 .build();
 

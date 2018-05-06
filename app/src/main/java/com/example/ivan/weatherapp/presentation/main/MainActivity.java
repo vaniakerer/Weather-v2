@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity implements MainView {
                 mAccount,
                 AUTHORITY,
                 Bundle.EMPTY,
-                1000);
+                2);
 
       /*  ins();
         stream();*/
