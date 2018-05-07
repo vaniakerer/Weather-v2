@@ -2,15 +2,15 @@ package com.example.ivan.weatherapp.presentation.main;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Interpolator;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,16 +24,14 @@ import com.example.ivan.weatherapp.domain.main.WeatherInteractor;
 import com.example.ivan.weatherapp.presentation.base.view.BaseActivity;
 import com.example.ivan.weatherapp.utils.CustomAnimationUtils;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,8 +41,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -67,11 +63,6 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private ViewGroup splashContainer;
     private ImageView splashImage;
-
-    private ObjectAnimator heigthAnimator;
-    private ObjectAnimator widthAnimator;
-
-    private AnimatorSet animatorSet;
 
     public static final String AUTHORITY = "com.example.ivan.weatherapp.provider";
     public static final String ACCOUNT_TYPE = "com.example.ivan.weatherapp";
@@ -104,20 +95,22 @@ public class MainActivity extends BaseActivity implements MainView {
 
         mAccount = CreateSyncAccount(this);
 
+        ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
         ContentResolver.addPeriodicSync(
                 mAccount,
                 AUTHORITY,
                 Bundle.EMPTY,
                 60 * 60);
 
-        Observable.create(e -> {
+ /*       Observable.create(e -> {
             readFile();
             readJson();
             regex();
 
-        }).subscribeOn(Schedulers.io())
+        })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe();*/
     }
 
     protected void initViews() {
@@ -283,34 +276,39 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void readFile() {
-       /* File sdcard = Environment.getExternalStorageDirectory();
 
+        File sdcard = Environment.getExternalStorageDirectory();
+
+        File fileWrite = new File(sdcard, "large1.txt");
         File file = new File(sdcard, "large.txt");
         InputStream inputStream = null;
-        BufferedReader reader = null;*/
+
         BufferedReader reader = null;
+        BufferedWriter writer = null;
+
         long timeBefore = System.currentTimeMillis();
         long lines = 0;
         try {
-           // inputStream = new FileInputStream(file);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(getAssets().open("large.txt"), 1024 * 8);
+            inputStream = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024 * 8);
             reader = new BufferedReader(new InputStreamReader(bufferedInputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Log.d("test", " : " + lines + " " + line);
+            writer = new BufferedWriter(new FileWriter(fileWrite));
+            int symbol;
+            while ((symbol = reader.read()) != -1) {
+                Log.d("test", " : " + lines + " " + symbol);
                 lines++;
+                writer.write(symbol);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 reader.close();
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
 
         Log.d("test", "Time: " + lines + " : " + (System.currentTimeMillis() - timeBefore) + " ");
 

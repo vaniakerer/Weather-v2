@@ -20,8 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bg_color="@color/switch_bg_color"
-            app:bg_height="30dp"
-            app:bg_width="70dp"
+            app:bg_height="40dp"
+            app:bg_width="100dp"
             app:radius="20dp"
             app:top_color="@color/colorAccent"
             app:top_size="40dp"
@@ -86,19 +86,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.ivan.weatherapp.view.SCloud
-        android:id="@+id/scloud_view"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="visible" />
+   <com.example.ivan.weatherapp.view.SCloud
+           android:id="@+id/scloud_view"
+           android:layout_width="match_parent"
+           android:layout_height="150dp"
+           android:layout_alignParentBottom="true"
+           android:visibility="visible" />
 
-    <com.example.ivan.weatherapp.view.PagerIndicator
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_above="@+id/scloud_view"
-        android:visibility="visible" />
+       <com.example.ivan.weatherapp.view.PagerIndicator
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerInParent="true"
+           android:layout_above="@+id/scloud_view"
+           android:visibility="visible" />
 
     <FrameLayout
         android:id="@+id/splash_container"
@@ -116,6 +116,7 @@
 
 
     </FrameLayout>
+
 
 
 </RelativeLayout>

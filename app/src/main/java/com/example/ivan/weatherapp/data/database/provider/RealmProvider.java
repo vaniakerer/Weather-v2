@@ -2,8 +2,6 @@ package com.example.ivan.weatherapp.data.database.provider;
 
 import android.content.Context;
 
-import com.example.ivan.weatherapp.data.database.migration.DbMigration;
-
 import javax.inject.Inject;
 
 import io.realm.Realm;

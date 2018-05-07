@@ -1,5 +1,7 @@
 package com.example.ivan.weatherapp.data.repository;
 
+import android.support.annotation.NonNull;
+
 import com.example.ivan.weatherapp.api.DarkSkyApi;
 import com.example.ivan.weatherapp.data.mapper.CityMapper;
 import com.example.ivan.weatherapp.data.mapper.WeatherMapper;
@@ -149,6 +151,7 @@ public class WeatherRepositoryImpl implements WeatherRepositoty {
             return this;
         }
 
+        @NonNull
         public WeatherRepositoryImpl build() {
             return new WeatherRepositoryImpl(this);
         }

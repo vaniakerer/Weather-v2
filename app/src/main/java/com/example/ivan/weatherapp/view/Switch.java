@@ -104,7 +104,6 @@ public class Switch extends View implements Checkable {
                 else
                     toogleCenter = Math.max(toogleCenter - (toogleCenter - savedDrawingPositionX), toogleSize / 2);
 
-                if (!isChecked)
                     trueBgPaintPercent = (toogleCenter * 100 / (getWidth() - toogleSize / 2)) / 100;
 
                 savedDrawingPositionX = motionEvent1.getX();
@@ -200,8 +199,8 @@ public class Switch extends View implements Checkable {
         valueAnimator = ValueAnimator.ofFloat(from, to);
         valueAnimator.addUpdateListener(valueAnimator1 -> {
             toogleCenter = ((Float) valueAnimator1.getAnimatedValue());
-            trueBgPaintPercent = (isChecked ? ((Float) valueAnimator.getAnimatedValue()) * 100 / to : (((Float) valueAnimator.getAnimatedValue() - to) * 100) / (from - to)) / 100;
-
+            trueBgPaintPercent = (toogleCenter * 100 / (getWidth() - toogleSize / 2)) / 100;
+            Log.d("TEST",  isChecked + "from: " + from + " to: " + to + "animValue: " + (Float) valueAnimator.getAnimatedValue() + " percent: " + trueBgPaintPercent);
             invalidate();
         });
 
