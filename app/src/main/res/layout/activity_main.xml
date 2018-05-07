@@ -87,14 +87,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.example.ivan.weatherapp.view.SCloud
+        android:id="@+id/scloud_view"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
         android:visibility="visible" />
 
     <com.example.ivan.weatherapp.view.PagerIndicator
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_above="@+id/scloud_view"
         android:visibility="visible" />
 
     <FrameLayout
@@ -102,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/splash_image"

@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +41,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends BaseActivity implements MainView {
@@ -97,10 +108,16 @@ public class MainActivity extends BaseActivity implements MainView {
                 mAccount,
                 AUTHORITY,
                 Bundle.EMPTY,
-                2);
+                60 * 60);
 
-      /*  ins();
-        stream();*/
+        Observable.create(e -> {
+            readFile();
+            readJson();
+            regex();
+
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 
     protected void initViews() {
@@ -200,17 +217,12 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     public static Account CreateSyncAccount(Context context) {
-        // Create the account type and default account
         Account newAccount = new Account(
                 ACCOUNT, ACCOUNT_TYPE);
-        // Get an instance of the Android account manager
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(
                         ACCOUNT_SERVICE);
-        /*
-         * Add the account and account type, no password or user data
-         * If successful, return the Account object, otherwise report an error.
-         */
+
         if (accountManager.addAccountExplicitly(newAccount, null, null)) {
 
         } else {
@@ -218,40 +230,6 @@ public class MainActivity extends BaseActivity implements MainView {
         }
 
         return newAccount;
-    }
-
-    private void ins() {
-        Pattern pattern = Pattern.compile("([\\w\\.])+\\w+@{1}([\\w\\.-]+).{1}\\w{2,5}");
-        Matcher matcher = pattern.matcher("asdasda@as.qw.www");
-        Log.d("asfasf", matcher.matches() + "");
-        Matcher matcher1 = pattern.matcher("as.s.w@asf.wwwwww");
-
-        while (matcher1.find())
-            Log.d("asfasf", matcher1.group() + " ");
-
-
-        Pattern ipPattern = Pattern.compile("(\\d{1,3}\\.{1}){3}(\\d{1,3}\\:){1}\\d{4}");
-        Matcher matcher2 = ipPattern.matcher("192.129.2.2:5555");
-        Log.d("asfasf--", matcher2.matches() + " ");
-        while (matcher2.find())
-            Log.d("asfasf--", matcher2.group());
-
-    }
-
-    private void stream() {
-        try {
-            InputStream fileInputStream = getAssets().open("json.json");
-            JsonReader jsonReader = new JsonReader(new InputStreamReader(fileInputStream));
-            Gson gson = new GsonBuilder().create();
-            jsonReader.beginArray();
-            while (jsonReader.hasNext()) {
-                Use use = gson.fromJson(jsonReader, Use.class);
-                Log.d("User", use.toString());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static class Use {
@@ -289,4 +267,72 @@ public class MainActivity extends BaseActivity implements MainView {
         }
     }
 
+    private void readJson() {
+        try {
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(getAssets().open("json.json")));
+            jsonReader.beginArray();
+            long lines = 0;
+            while (jsonReader.hasNext()) {
+                lines++;
+                Names a = new Gson().fromJson(jsonReader, Names.class);
+                Log.d("testJson", lines + " " + a.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readFile() {
+       /* File sdcard = Environment.getExternalStorageDirectory();
+
+        File file = new File(sdcard, "large.txt");
+        InputStream inputStream = null;
+        BufferedReader reader = null;*/
+        BufferedReader reader = null;
+        long timeBefore = System.currentTimeMillis();
+        long lines = 0;
+        try {
+           // inputStream = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(getAssets().open("large.txt"), 1024 * 8);
+            reader = new BufferedReader(new InputStreamReader(bufferedInputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Log.d("test", " : " + lines + " " + line);
+                lines++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        Log.d("test", "Time: " + lines + " : " + (System.currentTimeMillis() - timeBefore) + " ");
+
+    }
+
+    private void regex() {
+
+        Pattern emailPattern = Pattern.compile("(\\w+\\.\\w+)+@([\\w+\\.])+(\\w+\\.\\w{2,6})");
+        Matcher emailMatcher = emailPattern.matcher("asfas.fs.asas@a.ww.as");
+        Log.d("sasfasfMail", emailMatcher.matches() + "");
+        emailMatcher = emailPattern.matcher("asfas.fs.asas@a.wws.assswss");
+        Log.d("sasfasfMail", emailMatcher.matches() + "");
+        emailMatcher = emailPattern.matcher("asfas.fs.asas@a.ww.aa");
+        Log.d("sasfasfMail", emailMatcher.matches() + "");
+        emailMatcher = emailPattern.matcher("asfas.fs.asas@.as");
+        Log.d("sasfasfMail", emailMatcher.matches() + "");
+
+
+        Pattern searchPattern = Pattern.compile("\\d{3}Searched\\.");
+        Matcher searchMatcher = searchPattern.matcher("234Searched. 222.2Searched. 333Searched");
+        while (searchMatcher.find())
+            Log.d("sasfasfSearcj", searchMatcher.group());
+
+    }
 }
